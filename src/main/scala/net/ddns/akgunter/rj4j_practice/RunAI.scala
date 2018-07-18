@@ -1,6 +1,8 @@
 package net.ddns.akgunter.rj4j_practice
 
-object RunAI {
+import net.ddns.akgunter.rl4j_practice.spark.CanSpark
+
+object RunAI extends CanSpark {
   def main(args: Array[String]): Unit = {
     println("Ran")
   }

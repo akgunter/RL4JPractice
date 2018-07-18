@@ -1,4 +1,4 @@
-package net.ddns.akgunter.spark_learning.spark
+package net.ddns.akgunter.rl4j_practice.spark
 
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
