@@ -1,6 +1,4 @@
-package net.ddns.akgunter.rj4j_practice
-
-import net.ddns.akgunter.rl4j_practice.spark.CanSpark
+package net.ddns.akgunter.rl4j_practice
 
 object RunAI extends CanSpark {
   def main(args: Array[String]): Unit = {
