@@ -7,8 +7,6 @@ import org.deeplearning4j.rl4j.mdp.MDP
 import org.deeplearning4j.rl4j.space.{DiscreteSpace, ObservationSpace, ArrayObservationSpace}
 import org.json.JSONObject
 
-import net.ddns.akgunter.rl4j_practice.environment.BanditTeamState
-
 class BanditEnv(numBandits: Int, numMachines: Int, maxNumTrials: Int) extends MDP[BanditTeamState, Integer, DiscreteSpace] {
   protected var observationSpace: ArrayObservationSpace[BanditTeamState] = new ArrayObservationSpace(Array(numMachines))
   protected val actionSpace: DiscreteSpace = new DiscreteSpace(numMachines)

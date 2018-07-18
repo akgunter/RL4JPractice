@@ -9,7 +9,6 @@ import org.deeplearning4j.rl4j.util.DataManager
 import org.nd4j.linalg.learning.config.Adam
 import net.ddns.akgunter.rl4j_practice.environment.BanditEnv
 import net.ddns.akgunter.rl4j_practice.spark.CanSpark
-import org.deeplearning4j.rl4j.learning.sync.qlearning.QLearning.QLConfiguration
 
 object RunAI extends CanSpark {
   def main(args: Array[String]): Unit = {
@@ -31,7 +30,7 @@ object RunAI extends CanSpark {
       true      // double DQN
     )
 
-    val net = DQNFactoryStdDense.Configuration.builder()
+    val netConfig = DQNFactoryStdDense.Configuration.builder()
       .l2(0.001)
       .updater(new Adam(0.0005))
       .numHiddenNodes(16)
@@ -40,7 +39,7 @@ object RunAI extends CanSpark {
 
     val mdp = new BanditEnv(4, 4, 20)
 
-    val dql = new QLearningDiscreteDense(mdp, net, qlConfig, manager)
+    val dql = new QLearningDiscreteDense(mdp, netConfig, qlConfig, manager)
 
     dql.train()
 
