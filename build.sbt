@@ -22,8 +22,10 @@ lazy val rl4jpractice =
       libraryDependencies ++= Seq(
         "org.apache.spark" %% "spark-sql" % sparkVersion.value % "provided",
         "org.nd4j" % "nd4j-native-platform" % dl4jVersion.value,
-        "org.deeplearning4j" % "deeplearning4j-parent" % dl4jVersion.value,
-        "org.deeplearning4j" % "rl4j" % dl4jVersion.value,
+        "org.deeplearning4j" % "deeplearning4j-core" % dl4jVersion.value,
+        "org.deeplearning4j" % "rl4j-core" % dl4jVersion.value,
+        "org.deeplearning4j" % "rl4j-api" % dl4jVersion.value,
+        "org.deeplearning4j" % "rl4j-gym" % dl4jVersion.value,
         "org.datavec" % "datavec-parent" % dl4jVersion.value
       )
     )
