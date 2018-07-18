@@ -20,7 +20,7 @@ lazy val rl4jpractice =
           oldStrategy(x)
       },
       libraryDependencies ++= Seq(
-        "org.apache.spark" %% "spark-parent" % sparkVersion.value % "provided",
+        "org.apache.spark" %% "spark-sql" % sparkVersion.value % "provided",
         "org.nd4j" % "nd4j-native-platform" % dl4jVersion.value,
         "org.deeplearning4j" % "deeplearning4j-parent" % dl4jVersion.value,
         "org.deeplearning4j" % "rl4j" % dl4jVersion.value,
