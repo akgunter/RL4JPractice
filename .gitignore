@@ -1,0 +1,5 @@
+NDCMD
+bin/
+target/
+.idea
+.*.swp
