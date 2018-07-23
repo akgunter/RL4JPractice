@@ -58,7 +58,7 @@ object RunAI extends CanSpark {
     println(s"Average reward: ${results.sum / results.length}")
 
     val expectedReward = mdp.getDistributions.flatMap(_).sum * maxNumSteps / (numBandits * numMachines)
-    val expectedMaxReward = mdp.getDistributions.map(_.max) * maxNumSteps / numBandits
+    val expectedMaxReward = mdp.getDistributions.map(_.max).sum * maxNumSteps / numBandits
     println(s"Uniform Distribution Expected reward: $expectedReward")
     println(s"Uniform Distribution Maximum Expected reward: $expectedMaxReward")
   }
