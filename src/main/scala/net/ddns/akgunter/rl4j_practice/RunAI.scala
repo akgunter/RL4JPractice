@@ -13,6 +13,10 @@ import net.ddns.akgunter.rl4j_practice.spark.CanSpark
 object RunAI extends CanSpark {
   def main(args: Array[String]): Unit = {
 
+    val numBandits = 4
+    val numMachines = 4
+    val maxNumSteps = 20
+
     println("Creating pipeline...")
     val manager = new DataManager(false)
     val qlConfig = new QLearning.QLConfiguration(
@@ -36,10 +40,8 @@ object RunAI extends CanSpark {
       .numHiddenNodes(16)
       .numLayer(3)
       .build
-    val mdp = new BanditEnv(4, 4, 20, debug = true)
+    val mdp = new BanditEnv(numBandits, numMachines, maxNumSteps, debug = true)
     val dql = new QLearningDiscreteDense(mdp, netConfig, qlConfig, manager)
-
-    import org.deeplearning4j.rl4j.mdp.toy.SimpleToy
 
     println("Training AI...")
     dql.train()
@@ -54,5 +56,10 @@ object RunAI extends CanSpark {
 
     println(s"Total rewards: ${results.sum}")
     println(s"Average reward: ${results.sum / results.length}")
+
+    val expectedReward = mdp.getDistributions.flatMap(_).sum * maxNumSteps / (numBandits * numMachines)
+    val expectedMaxReward = mdp.getDistributions.map(_.max) * maxNumSteps / numBandits
+    println(s"Uniform Distribution Expected reward: $expectedReward")
+    println(s"Uniform Distribution Maximum Expected reward: $expectedMaxReward")
   }
 }

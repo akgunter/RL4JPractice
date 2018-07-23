@@ -1,10 +1,10 @@
 package net.ddns.akgunter.rl4j_practice.environment
 
 import scala.util.Random
-
 import org.deeplearning4j.gym.StepReply
+import org.deeplearning4j.rl4j.learning.sync.qlearning.discrete.QLearningDiscrete
 import org.deeplearning4j.rl4j.mdp.MDP
-import org.deeplearning4j.rl4j.space.{DiscreteSpace, ObservationSpace, ArrayObservationSpace}
+import org.deeplearning4j.rl4j.space.{ArrayObservationSpace, DiscreteSpace, ObservationSpace}
 import org.json.JSONObject
 
 class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int, debug: Boolean = false) extends MDP[BanditTeamState, Integer, DiscreteSpace] {
@@ -22,6 +22,8 @@ class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int, debug: Bool
 
   override def getActionSpace: DiscreteSpace = actionSpace
 
+  def getDistributions: Array[Array[Double]] = distributions
+
   override def reset(): BanditTeamState = {
     numResets += 1
 
@@ -34,7 +36,10 @@ class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int, debug: Bool
   override def close(): Unit = {}
 
   override def step(action: Integer): StepReply[BanditTeamState] = {
-    if (debug) println(s"Running step $numStepsTaken of $maxNumSteps, epoch $numResets")
+    if (debug && numStepsTaken == 0) {
+      println(s"Starting epoch ${numResets + 1}")
+    }
+
     val threshold = distributions(currentState.getCurBandit)(action)
     val reward = if (Random.nextDouble > threshold) 1 else -1
     currentState = currentState.getNextState
@@ -48,6 +53,6 @@ class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int, debug: Bool
   }
 
   override def newInstance(): MDP[BanditTeamState, Integer, DiscreteSpace] = {
-    new BanditEnv(numBandits, numMachines, maxNumSteps)
+    new BanditEnv(numBandits, numMachines, maxNumSteps, debug)
   }
 }
