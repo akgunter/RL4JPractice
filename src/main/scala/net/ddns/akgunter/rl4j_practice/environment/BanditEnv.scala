@@ -16,11 +16,15 @@ class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int, debug: Bool
     Array.fill(numBandits)(Array.fill(numMachines)(Random.nextDouble))
   }
 
+  protected var numResets = 0
+
   override def getObservationSpace: ObservationSpace[BanditTeamState] = observationSpace
 
   override def getActionSpace: DiscreteSpace = actionSpace
 
   override def reset(): BanditTeamState = {
+    numResets += 1
+
     observationSpace = new ArrayObservationSpace(Array(numMachines))
     currentState = new BanditTeamState(numBandits)
     numStepsTaken = 0
@@ -30,7 +34,7 @@ class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int, debug: Bool
   override def close(): Unit = {}
 
   override def step(action: Integer): StepReply[BanditTeamState] = {
-    if (debug) println(s"Running step $numStepsTaken of $maxNumSteps")
+    if (debug) println(s"Running step $numStepsTaken of $maxNumSteps, epoch $numResets")
     val threshold = distributions(currentState.getCurBandit)(action)
     val reward = if (Random.nextDouble > threshold) 1 else -1
     currentState = currentState.getNextState
