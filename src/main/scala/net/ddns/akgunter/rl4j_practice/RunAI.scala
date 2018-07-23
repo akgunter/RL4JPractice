@@ -12,8 +12,9 @@ import net.ddns.akgunter.rl4j_practice.spark.CanSpark
 
 object RunAI extends CanSpark {
   def main(args: Array[String]): Unit = {
-    val manager = new DataManager(false)
 
+    println("Creating pipeline...")
+    val manager = new DataManager(false)
     val qlConfig = new QLearning.QLConfiguration(
       123,      // random seed
       200,      // max step by epoch
@@ -29,22 +30,23 @@ object RunAI extends CanSpark {
       1000,     // num step for eps greedy anneal
       true      // double DQN
     )
-
     val netConfig = DQNFactoryStdDense.Configuration.builder()
       .l2(0.001)
       .updater(new Adam(0.0005))
       .numHiddenNodes(16)
       .numLayer(3)
       .build
-
     val mdp = new BanditEnv(4, 4, 20)
-
     val dql = new QLearningDiscreteDense(mdp, netConfig, qlConfig, manager)
 
+    import org.deeplearning4j.rl4j.mdp.toy.SimpleToy
+
+    println("Training AI...")
     dql.train()
 
     val policy = dql.getPolicy
 
+    println("Evaluating AI...")
     val results = Array.fill(100) {
       mdp.reset()
       policy.play(mdp)
