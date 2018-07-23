@@ -15,5 +15,10 @@ class BanditTeamState(curBandit: Int, numBandits: Int) extends Encodable {
 
   def getNextState: BanditTeamState = new BanditTeamState(Random.nextInt(numBandits), numBandits)
 
-  override def toArray: Array[Double] = Array(curBandit, numBandits)
+  override def toArray: Array[Double] = {
+    (0 until numBandits).map {
+      idx =>
+        if (idx == curBandit) 1.0 else 0.0
+    }.toArray
+  }
 }
