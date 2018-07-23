@@ -36,7 +36,7 @@ object RunAI extends CanSpark {
       .numHiddenNodes(16)
       .numLayer(3)
       .build
-    val mdp = new BanditEnv(4, 4, 20)
+    val mdp = new BanditEnv(4, 4, 20, debug = true)
     val dql = new QLearningDiscreteDense(mdp, netConfig, qlConfig, manager)
 
     import org.deeplearning4j.rl4j.mdp.toy.SimpleToy

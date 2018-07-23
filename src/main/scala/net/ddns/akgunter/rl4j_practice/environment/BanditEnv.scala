@@ -7,7 +7,7 @@ import org.deeplearning4j.rl4j.mdp.MDP
 import org.deeplearning4j.rl4j.space.{DiscreteSpace, ObservationSpace, ArrayObservationSpace}
 import org.json.JSONObject
 
-class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int) extends MDP[BanditTeamState, Integer, DiscreteSpace] {
+class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int, debug: Boolean = false) extends MDP[BanditTeamState, Integer, DiscreteSpace] {
   protected var observationSpace: ArrayObservationSpace[BanditTeamState] = new ArrayObservationSpace(Array(numMachines))
   protected val actionSpace: DiscreteSpace = new DiscreteSpace(numMachines)
   protected var currentState: BanditTeamState = new BanditTeamState(numBandits)
@@ -30,6 +30,7 @@ class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int) extends MDP
   override def close(): Unit = {}
 
   override def step(action: Integer): StepReply[BanditTeamState] = {
+    if (debug) println(s"Running step $numStepsTaken of $maxNumSteps")
     val threshold = distributions(currentState.getCurBandit)(action)
     val reward = if (Random.nextDouble > threshold) 1 else -1
     currentState = currentState.getNextState
