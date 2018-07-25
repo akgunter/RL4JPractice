@@ -6,19 +6,48 @@ import org.deeplearning4j.rl4j.space.Encodable
 import org.nd4j.linalg.api.ndarray.INDArray
 import org.nd4j.linalg.factory.Nd4j
 
-class BanditTeamState(curBandit: Int, numBandits: Int) extends Encodable {
+class BanditTeamState(curBandit: Int, rewards: Array[Array[Int]]) extends Encodable {
+  val numBandits: Int = rewards.length
+  val numMachines: Int = rewards(curBandit).length
+  val bestMachines: Array[Int] = BanditTeamState.generateBestRewards(rewards)
+
   def this(numBandits: Int) = this(Random.nextInt(numBandits), numBandits)
 
   def getCurBandit: Int = curBandit
 
   def getNumBandits: Int = numBandits
 
-  def getNextState: BanditTeamState = new BanditTeamState(Random.nextInt(numBandits), numBandits)
+  def getRewards: Array[Array[Int]] = rewards
+
+  def getBestMachines: Array[Int] = bestMachines
+
+  def getNextState(chosenMachine: Int): BanditTeamState = {
+    val curBestMachine = bestMachines(curBandit)
+
+    if (curBestMachine == chosenMachine)
+      rewards(curBandit)(curBestMachine) -> rewards(curBandit)(chosenMachine) = rewards(curBandit)(chosenMachine) -> rewards(curBandit)(curBestMachine)
+
+    new BanditTeamState(Random.nextInt(numBandits), rewards)
+  }
 
   override def toArray: Array[Double] = {
     (0 until numBandits).map {
       idx =>
         if (idx == curBandit) 1.0 else 0.0
     }.toArray
+  }
+}
+
+object BanditTeamState {
+  def generateNewState(numBandits: Int, numMachines: Int): BanditTeamState = {
+    new BanditTeamState(numBandits, generateRewards(numBandits, numMachines))
+  }
+
+  def generateRewards(numBandits: Int, numMachines: Int): Array[Array[Int]] = {
+    Array.fill(numBandits)(Array.fill(numMachines)(Random.nextInt * 10 - 5))
+  }
+
+  def generateBestRewards(rewards: Array[Array[Int]]): Array[Int] = {
+    rewards.map(_.zipWithIndex.max._2)
   }
 }

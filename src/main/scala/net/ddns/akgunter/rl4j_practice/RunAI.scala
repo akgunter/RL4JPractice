@@ -2,9 +2,7 @@ package net.ddns.akgunter.rl4j_practice
 
 import org.deeplearning4j.rl4j.learning.sync.qlearning.QLearning
 import org.deeplearning4j.rl4j.learning.sync.qlearning.discrete.QLearningDiscreteDense
-import org.deeplearning4j.rl4j.mdp.gym.GymEnv
 import org.deeplearning4j.rl4j.network.dqn.DQNFactoryStdDense
-import org.deeplearning4j.rl4j.space.{Box, DiscreteSpace}
 import org.deeplearning4j.rl4j.util.DataManager
 import org.nd4j.linalg.learning.config.Adam
 import net.ddns.akgunter.rl4j_practice.environment.BanditEnv
@@ -57,11 +55,12 @@ object RunAI extends CanSpark {
     println(s"Total rewards: ${results.sum}")
     println(s"Average reward: ${results.sum / results.length}")
 
-    val expectedReward = mdp.getDistributions.flatMap {
-      distRow => distRow.map(2*_ - 1)
-    }.sum * maxNumSteps / (numBandits * numMachines)
-    val expectedMaxReward = mdp.getDistributions.map(2 * _.max - 1).sum * maxNumSteps / numBandits
-    println(s"Uniform Distribution Expected reward: $expectedReward")
-    println(s"Uniform Distribution Maximum Expected reward: $expectedMaxReward")
+    val randomChoiceExpectation = mdp.getRewards
+      .flatten
+      .sum * maxNumSteps / (numBandits * numMachines)
+    val expectedOptimalReward = mdp.getRewards.map(_.max).sum * maxNumSteps / numBandits
+
+    println(s"Expected reward for random choice: $randomChoiceExpectation")
+    println(s"Uniform Distribution Maximum Expected reward: $expectedOptimalReward")
   }
 }

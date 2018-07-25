@@ -10,26 +10,28 @@ import org.json.JSONObject
 class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int, debug: Boolean = false) extends MDP[BanditTeamState, Integer, DiscreteSpace] {
   protected var observationSpace: ArrayObservationSpace[BanditTeamState] = new ArrayObservationSpace(Array(numMachines))
   protected val actionSpace: DiscreteSpace = new DiscreteSpace(numMachines)
-  protected var currentState: BanditTeamState = new BanditTeamState(numBandits)
-  protected var numStepsTaken = 0
-  protected val distributions: Array[Array[Double]] = {
-    Array.fill(numBandits)(Array.fill(numMachines)(Random.nextDouble))
-  }
+  protected var currentState: BanditTeamState = BanditTeamState.generateNewState(numBandits, numMachines)
 
+  protected val initState: BanditTeamState = currentState
+
+  protected var numStepsTaken = 0
   protected var numResets = 0
 
   override def getObservationSpace: ObservationSpace[BanditTeamState] = observationSpace
 
   override def getActionSpace: DiscreteSpace = actionSpace
 
-  def getDistributions: Array[Array[Double]] = distributions
+  def getRewards: Array[Array[Int]] = currentState.getRewards
+
+  def getBestMachines: Array[Int] = currentState.getBestMachines
 
   override def reset(): BanditTeamState = {
     numResets += 1
 
     observationSpace = new ArrayObservationSpace(Array(numMachines))
-    currentState = new BanditTeamState(numBandits)
+    currentState = initState
     numStepsTaken = 0
+
     currentState
   }
 
@@ -40,9 +42,11 @@ class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int, debug: Bool
       println(s"Starting epoch ${numResets + 1}")
     }
 
-    val threshold = distributions(currentState.getCurBandit)(action)
-    val reward = if (Random.nextDouble > threshold) 1 else -1
-    currentState = currentState.getNextState
+    val curBandit = currentState.getCurBandit
+    val reward = currentState.getRewards(curBandit)(action)
+
+    currentState = currentState.getNextState(action)
+
     numStepsTaken += 1
 
     new StepReply(currentState, reward, isDone, new JSONObject("{}"))
