@@ -41,7 +41,7 @@ class BanditTeamState(curBandit: Int, rewards: Array[Array[Int]]) extends Encoda
 
 object BanditTeamState {
   def generateNewState(numBandits: Int, numMachines: Int): BanditTeamState = {
-    new BanditTeamState(numBandits, generateRewards(numBandits, numMachines))
+    new BanditTeamState(Random.nextInt(numBandits), generateRewards(numBandits, numMachines))
   }
 
   def generateRewards(numBandits: Int, numMachines: Int): Array[Array[Int]] = {
