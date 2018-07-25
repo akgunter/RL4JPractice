@@ -22,8 +22,11 @@ class BanditTeamState(curBandit: Int, rewards: Array[Array[Int]]) extends Encoda
   def getNextState(chosenMachine: Int): BanditTeamState = {
     val curBestMachine = bestMachines(curBandit)
 
-    if (curBestMachine == chosenMachine)
-      (rewards(curBandit)(curBestMachine), rewards(curBandit)(chosenMachine)) = (rewards(curBandit)(chosenMachine), rewards(curBandit)(curBestMachine))
+    if (curBestMachine == chosenMachine) {
+      val tmp = rewards(curBandit)(curBestMachine)
+      rewards(curBandit)(curBestMachine) = rewards(curBandit)(chosenMachine)
+      rewards(curBandit)(chosenMachine) = tmp
+    }
 
     new BanditTeamState(Random.nextInt(numBandits), rewards)
   }
