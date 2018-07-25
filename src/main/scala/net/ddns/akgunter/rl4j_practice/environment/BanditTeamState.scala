@@ -11,8 +11,6 @@ class BanditTeamState(curBandit: Int, rewards: Array[Array[Int]]) extends Encoda
   val numMachines: Int = rewards(curBandit).length
   val bestMachines: Array[Int] = BanditTeamState.generateBestRewards(rewards)
 
-  def this(numBandits: Int) = this(Random.nextInt(numBandits), numBandits)
-
   def getCurBandit: Int = curBandit
 
   def getNumBandits: Int = numBandits
@@ -25,7 +23,7 @@ class BanditTeamState(curBandit: Int, rewards: Array[Array[Int]]) extends Encoda
     val curBestMachine = bestMachines(curBandit)
 
     if (curBestMachine == chosenMachine)
-      rewards(curBandit)(curBestMachine) -> rewards(curBandit)(chosenMachine) = rewards(curBandit)(chosenMachine) -> rewards(curBandit)(curBestMachine)
+      (rewards(curBandit)(curBestMachine), rewards(curBandit)(chosenMachine)) = (rewards(curBandit)(chosenMachine), rewards(curBandit)(curBestMachine))
 
     new BanditTeamState(Random.nextInt(numBandits), rewards)
   }
