@@ -21,7 +21,7 @@ class BanditEnv(numBandits: Int, numMachines: Int, maxNumSteps: Int, debug: Bool
 
   override def getActionSpace: DiscreteSpace = actionSpace
 
-  def getRewards: Array[Array[Int]] = currentState.getRewards
+  def getRewards: Array[Array[Double]] = currentState.getRewards
 
   def getBestMachines: Array[Int] = currentState.getBestMachines
 

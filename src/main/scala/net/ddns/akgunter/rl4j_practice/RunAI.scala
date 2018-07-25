@@ -19,13 +19,13 @@ object RunAI extends CanSpark {
     val manager = new DataManager(false)
     val qlConfig = new QLearning.QLConfiguration(
       123,      // random seed
-      200,      // max step by epoch
-      150000,   // max step
-      150000,   // max size of experience replay
+      30,       // max step by epoch
+      1,        // max step
+      300,      // max size of experience replay
       32,       // size of batches
       500,      // target update (hard)
-      10,       // num step noop warmup
-      0.01,     // reward scaling
+      1,        // num step noop warmup
+      0.1,      // reward scaling
       0.99,     // gamma
       1.0,      // td-error clipping
       0.1f,     // min epsilon
