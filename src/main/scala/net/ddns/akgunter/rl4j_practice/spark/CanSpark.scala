@@ -1,5 +1,9 @@
 package net.ddns.akgunter.rl4j_practice.spark
 
+/*
+CanSpark trait authored by Wil Adamec (https://github.com/wiladamec) and used with permission.
+ */
+
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
